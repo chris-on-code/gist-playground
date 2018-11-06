@@ -1,28 +1,38 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Editor from './Editor';
+import Terminal from './Terminal';
+import './App.scss';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+const Divitis = ({ children }) => (
+  <div className="hero">
+    <div className="hero-body">
+      <div className="container">{children}</div>
+    </div>
+  </div>
+);
+
+export default function() {
+  const [history, setHistory] = useState([{ text: 'first' }]);
+
+  const addItem = item => {
+    history.push(item);
+    setHistory(history);
+  };
+
+  const clearHistory = () => setHistory([]);
+
+  return (
+    <Divitis>
+      <div className="playground">
+        <div className="columns is-variable is-2">
+          <div className="column playground-column">
+            <Editor sandboxId="1234" addItem={addItem} />
+          </div>
+          <div className="column playground-column">
+            <Terminal history={history} clearHistory={clearHistory} />
+          </div>
+        </div>
       </div>
-    );
-  }
+    </Divitis>
+  );
 }
-
-export default App;
