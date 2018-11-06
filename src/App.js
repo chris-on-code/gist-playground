@@ -12,7 +12,7 @@ const Divitis = ({ children }) => (
 );
 
 export default function() {
-  const [history, setHistory] = useState([{ text: 'first' }]);
+  const [history, setHistory] = useState([]);
 
   const addItem = item => {
     history.push(item);

@@ -7,11 +7,20 @@ require('codemirror/mode/javascript/javascript');
 
 export default class Editor extends Component {
   state = {
-    code: "console.log('hello')"
+    code: `// 1. create a string
+const myMessage = 'this is so ugly';
+
+// 2. replace ugly with beautiful
+const newMessage = myMessage.replace('ugly', 'beautiful');
+
+// 3. outputs: this is so beautiful
+console.log(newMessage);
+    `
   };
 
   componentDidMount() {
     window.scotchLog = this.scotchLog.bind(this);
+    this.evaluateCode();
   }
 
   handleChange = code => {
