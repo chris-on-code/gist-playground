@@ -15,7 +15,10 @@ export default ({ history, clearHistory }) => (
       </li>
     </ul>
 
-    <button onClick={clearHistory} className="button">
+    <button
+      onClick={clearHistory}
+      className="button is-white is-outlined is-small"
+    >
       Clear
     </button>
   </div>

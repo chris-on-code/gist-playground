@@ -19,49 +19,23 @@ console.log(newMessage);
   };
 
   componentDidMount() {
-    window.scotchLog = this.scotchLog.bind(this);
     this.evaluateCode();
   }
 
   handleChange = code => {
     this.setState({ code });
-    this.debouncedEval(code);
+    this.debouncedRun(code);
   };
 
   evaluateCode = () => {
-    const newCode = this.state.code.replace(
-      new RegExp('console.log', 'g'),
-      `scotchLog`
-    );
-
-    try {
-      eval(newCode);
-    } catch (err) {
-      console.error(err);
-      this.scotchLog(err.message);
-    }
+    this.props.runCode({ js: this.state.code });
   };
 
-  debouncedEval = debounce(this.evaluateCode, 2000);
-
-  scotchLog() {
-    let output = '';
-    let arg;
-    let i;
-
-    for (i = 0; i < arguments.length; i++) {
-      arg = arguments[i];
-      output += typeof arg === 'object' ? JSON.stringify(arg) : arg;
-    }
-
-    this.props.addItem({ text: output });
-  }
+  debouncedRun = debounce(this.evaluateCode, 500);
 
   render() {
     const { code } = this.state;
-    const options = {
-      lineNumbers: true
-    };
+    const options = { lineNumbers: true };
 
     return (
       <div className="playground-editor">
@@ -71,7 +45,10 @@ console.log(newMessage);
           options={options}
         />
 
-        <button onClick={this.evaluateCode} className="button">
+        <button
+          onClick={this.evaluateCode}
+          className="button is-dark is-outlined is-small"
+        >
           Run
         </button>
       </div>
