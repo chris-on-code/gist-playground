@@ -1,56 +1,41 @@
 import React, { Component } from 'react';
 import debounce from 'lodash.debounce';
-import CodeMirror from 'react-codemirror';
+import { Controlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/neat.css';
 import './Editor.scss';
+require('codemirror/mode/css/css');
 require('codemirror/mode/javascript/javascript');
 
 export default class Editor extends Component {
-  state = {
-    code: `// 1. create a string
-const myMessage = 'this is so ugly';
+  state = { value: this.props.code };
 
-// 2. replace ugly with beautiful
-const newMessage = myMessage.replace('ugly', 'beautiful');
-
-// 3. outputs: this is so beautiful
-console.log(newMessage);
-    `
-  };
-
-  componentDidMount() {
-    this.evaluateCode();
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.code !== this.props.code)
+      this.setState({ value: this.props.code });
   }
 
-  handleChange = code => {
-    this.setState({ code });
-    this.debouncedRun(code);
+  handleChange = (editor, data, value) => {
+    this.setState({ value });
+    this.debouncedUpdate(value);
   };
 
-  evaluateCode = () => {
-    this.props.runCode({ js: this.state.code });
-  };
-
-  debouncedRun = debounce(this.evaluateCode, 500);
+  debouncedUpdate = debounce(value => {
+    this.props.updateCode(value);
+  }, 500);
 
   render() {
-    const { code } = this.state;
-    const options = { lineNumbers: true };
+    const { value } = this.state;
+    const { language } = this.props;
+    const options = { lineNumbers: true, mode: language, theme: 'neat' };
 
     return (
       <div className="playground-editor">
         <CodeMirror
-          value={code}
-          onChange={this.handleChange}
+          value={value}
+          onBeforeChange={this.handleChange}
           options={options}
         />
-
-        <button
-          onClick={this.evaluateCode}
-          className="button is-dark is-outlined is-small"
-        >
-          Run
-        </button>
       </div>
     );
   }
